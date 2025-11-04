@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Achievements - Durvas Harkulkar</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .achievements-page {
+            padding-top: 80px;
+            min-height: 100vh;
+            background: var(--bg-primary);
+        }
+        
+        .achievements-header {
+            text-align: center;
+            padding: 100px 0 80px;
+            background: var(--gradient-bg);
+        }
+        
+        .achievements-header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .achievements-header p {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .achievements-content {
+            padding: 80px 0;
+        }
+        
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .certificate-item {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px var(--shadow);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .certificate-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px var(--shadow-lg);
+        }
+        
+        .certificate-image {
+            width: 100%;
+            height: 250px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .certificate-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .certificate-item:hover .certificate-image img {
+            transform: scale(1.05);
+        }
+        
+        .certificate-content {
+            padding: 25px;
+        }
+        
+        .certificate-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .certificate-description {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+            background: var(--bg-primary);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+            pointer-events: auto;
+        }
+        
+        .modal-image {
+            width: 100%;
+            height: auto;
+            max-height: 80vh;
+            object-fit: contain;
+        }
+        
+        .modal-header {
+            padding: 25px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-close:hover {
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+        }
+        
+        .back-to-home {
+            position: fixed;
+            top: 100px;
+            left: 20px;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-size: 1rem;
+        }
+        
+        .back-to-home:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .achievements-header h1 {
+                font-size: 2.8rem;
+            }
+            
+            .achievements-grid {
+                grid-template-columns: 1fr;
+                padding: 0 15px;
+            }
+            
+            .back-to-home {
+                position: static;
+                margin: 20px auto;
+                display: inline-flex;
+            }
+            
+        }
+    </style>
+</head>
+<body>
+    <!-- Back to Home Button -->
+    <a href="index.html" class="back-to-home">
+        <i class="fas fa-arrow-left"></i>
+        Back to Home
+    </a>
+
+    <!-- Achievements Header -->
+    <div class="achievements-header">
+        <div class="container">
+            <h1>My Achievements</h1>
+            <p>Certificates and accomplishments that showcase my journey in technology and academics.</p>
+        </div>
+    </div>
+
+    <!-- Achievements Content -->
+    <div class="achievements-content">
+        <div class="container">
+            <!-- Achievements Grid -->
+            <div class="achievements-grid" id="achievements-grid">
+                <!-- Certificate Items with Images -->
+                <div class="certificate-item">
+                    <div class="certificate-image">
+                        <img src="images/jspmres.jpg" alt="B.Tech Performance">
+                    </div>
+                    <div class="certificate-content">
+                        <h3 class="certificate-title">B.Tech Current Performance</h3>
+                        <p class="certificate-description">Maintaining 8.64 CGPA at JSPM's Rajarshi Shahu College</p>
+                    </div>
+                </div>
+
+                <div class="certificate-item">
+                    <div class="certificate-image">
+                        <img src="images/aicertificate.jpg" alt="Internship Certificate">
+                    </div>
+                    <div class="certificate-content">
+                        <h3 class="certificate-title">Fundamentals Of AI</h3>
+                        <p class="certificate-description">Completion Of IBM SkillsBuild Fundamentals Of AI Course</p>
+                    </div>
+                </div>
+
+                <div class="certificate-item">
+                    <div class="certificate-image">
+                        <img src="images/dbms.jpg" alt="School Certificate">
+                    </div>
+                    <div class="certificate-content">
+                        <h3 class="certificate-title">DBMS Mastery Course</h3>
+                        <p class="certificate-description">Completion Of DBMS Mastery Scalar Course</p>
+                    </div>
+                </div>
+
+                <div class="certificate-item">
+                    <div class="certificate-image">
+                        <img src="images/chess.jpg" alt="Sports Certificate">
+                    </div>
+                    <div class="certificate-content">
+                        <h3 class="certificate-title">Sports Participation</h3>
+                        <p class="certificate-description">Active participation Chess</p>
+                    </div>
+                </div>
+
+                <div class="certificate-item">
+                    <div class="certificate-image">
+                        <img src="images/ACM.jpg" alt="Project Certificate">
+                    </div>
+                    <div class="certificate-content">
+                        <h3 class="certificate-title">ACM Website Creation</h3>
+                        <p class="certificate-description">Updated the website of the JSPM ACM Chapter</p>
+                    </div>
+                </div>
+
+                <div class="certificate-item">
+                    <div class="certificate-image">
+                        <img src="images/CodeWolf.jpg" alt="B.Tech Performance">
+                    </div>
+                    <div class="certificate-content">
+                        <h3 class="certificate-title">CodeWolf 5.0 Participant</h3>
+                        <p class="certificate-description">Active participation in CodeWolf 5.0</p>
+                    </div>
+                </div>
+
+                <div class="certificate-item">
+                    <div class="certificate-image">
+                        <img src="images/digimarkt.jpg" alt="B.Tech Performance">
+                    </div>
+                    <div class="certificate-content">
+                        <h3 class="certificate-title">Fundamentals Of Digital Marketing</h3>
+                        <p class="certificate-description">Completion Of Fundamentals Of Digital Marketing Course</p>
+                    </div>
+                </div>
+
+                <div class="certificate-item">
+                    <div class="certificate-image">
+                        <img src="images/pdc.jpg" alt="B.Tech Performance">
+                    </div>
+                    <div class="certificate-content">
+                        <h3 class="certificate-title">Oraganizing Team Member</h3>
+                        <p class="certificate-description">Oraganizing Team Member of PDC 'PROQUEST' event</p>
+                    </div>
+                </div>
+
+                <div class="certificate-item">
+                    <div class="certificate-image">
+                        <img src="images/st_c.jpg" alt="B.Tech Performance">
+                    </div>
+                    <div class="certificate-content">
+                        <h3 class="certificate-title">Spoken Tutorial: C Language</h3>
+                        <p class="certificate-description">Completion Of Spoken Tutorial: C Language Certification</p>
+                    </div>
+                </div>
+
+                <div class="certificate-item">
+                    <div class="certificate-image">
+                        <img src="images/st_cpp.jpg" alt="B.Tech Performance">
+                    </div>
+                    <div class="certificate-content">
+                        <h3 class="certificate-title">Spoken Tutorial: C++ Language</h3>
+                        <p class="certificate-description">Completion Of Spoken Tutorial: C++ Language Certification</p>
+                    </div>
+                </div>
+
+                <div class="certificate-item">
+                    <div class="certificate-image">
+                        <img src="images/st_java.jpg" alt="B.Tech Performance">
+                    </div>
+                    <div class="certificate-content">
+                        <h3 class="certificate-title">Spoken Tutorial: Java Language</h3>
+                        <p class="certificate-description">Completion Of Spoken Tutorial: Java Language Certification</p>
+                    </div>
+                </div>
+
+                <div class="certificate-item">
+                    <div class="certificate-image">
+                        <img src="images/st_linux.jpg" alt="B.Tech Performance">
+                    </div>
+                    <div class="certificate-content">
+                        <h3 class="certificate-title">Spoken Tutorial: Linux Language</h3>
+                        <p class="certificate-description">Completion Of Spoken Tutorial: Linux Language Certification</p>
+                    </div>
+                </div>
+                
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal for Image Viewing -->
+    <div id="certificate-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">Certificate</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <img id="modal-image" class="modal-image" src="" alt="Certificate">
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Modal functions (global scope for onclick attribute)
+        function openModal(imageSrc, title) {
+            const modal = document.getElementById('certificate-modal');
+            const modalImage = document.getElementById('modal-image');
+            const modalTitle = document.getElementById('modal-title');
+
+            if (modal && modalImage && modalTitle) {
+                modalImage.src = imageSrc;
+                modalImage.alt = title;
+                modalTitle.textContent = title;
+                modal.style.display = 'block';
+                modal.style.opacity = '0';
+                document.body.style.overflow = 'hidden';
+                
+                // Fade in animation
+                setTimeout(() => {
+                    modal.style.opacity = '1';
+                    modal.style.transition = 'opacity 0.3s ease';
+                }, 10);
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('certificate-modal');
+            if (modal) {
+                modal.style.opacity = '0';
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }, 300);
+            }
+        }
+
+        // Certificate item click to open modal
+        document.addEventListener('DOMContentLoaded', () => {
+            const certificateItems = document.querySelectorAll('.certificate-item');
+            
+            certificateItems.forEach((item) => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const titleEl = this.querySelector('.certificate-title');
+                    const imageEl = this.querySelector('.certificate-image img');
+                    
+                    if (titleEl && imageEl) {
+                        const title = titleEl.textContent.trim();
+                        const imageSrc = imageEl.src || imageEl.getAttribute('src');
+                        openModal(imageSrc, title);
+                    }
+                });
+            });
+
+            // Close modal when clicking outside (on backdrop)
+            const modal = document.getElementById('certificate-modal');
+            if (modal) {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        closeModal();
+                    }
+                });
+            }
+
+            // Close modal with ESC key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' || e.keyCode === 27) {
+                    const modal = document.getElementById('certificate-modal');
+                    if (modal && modal.style.display === 'block') {
+                        closeModal();
+                    }
+                }
+            });
+        });
+
+
+        // Add fade-in animation to certificate items
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe certificate items
+        document.querySelectorAll('.certificate-item').forEach(item => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(30px)';
+            item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(item);
+        });
+    </script>
+</body>
+</html>
